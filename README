@@ -1,0 +1,53 @@
+Author: Varun Sharma
+
+Filenames:
+	- index.html
+	- include/controller.php
+	- config/config.php
+	- config/quantum_table.sql
+
+Requirements:
+	Using the credentials included below, create a simple web based application that has 2 columns (use bootstrap with a col-lg-6):
+		- First column contains a rendering of content inside a MySQL database. The columns are "ASIN", "Title", "MPN", and "Price". This data will populate on page load, as well as refresh when a new ASIN is added to the database (from column 2) so that the data rendered from the database is always current. 
+		- The second column should contain a text input field and a button. The button will make an AJAX request to Amazon's Product Advertising API and return a JSON string with "ASIN", "Title", "MPN", and "Price". 
+
+	The response will be rendered underneath the input field / button. When the content is rendered, there should be an additional button that will insert these values into the database. On click, insert these values into the MySQL db. The application should only be on one page, and have no reloads. 
+
+	The display page MUST end in .html, and PHP should ONLY be used to make the connection to Amazon as well as return the json response. The end result should contain: 
+		- 1 Main Application Page (HTML) 1 Class which will contain the function used to call AWS and return the JSON response, as well as a function to insert into the database (PHP) 
+		- 1 Database with 1 Table (MySQL) 
+		- 1 Config file (Outlining the credentials for the database and the API) 
+		- 1 SQL dump of the database containing the information gathered from Amazon.
+
+How to run:
+	- Setup a LAMP/WAMP on your local machine
+	- Create a database.
+	- Create a user.
+	- Configure the DB details in the config file.
+	- Create a table by the name 'QUANTUM_TABLE'.
+	- Create a new project in the www folder of your LAMP/WAMP environment.
+	- Extract the given zip file into a folder and transfer the contents into the projects directory of LAMP/WAMP environment.
+	- Launch http://localhost/<project_name>.
+
+OutputFiles:
+	- Database.png - Shows PHPMYADMIN MYSQL Database information.
+	- StaticHTMLPage.png - Main application static HTML page.
+	- ItemLookupAWS.png - Lookup Item using the AWS class to send a request.
+	- InsertItemToDB.png - Add looked up item to the local MYSQL database.
+
+Interface:
+	Quantum
+	   |
+	   |__index.html - Static HTML page which loads the content from local MYSQL database and the AWS.
+	   |	   |
+	   |	   |__config
+	   |	   |	 |
+	   |	   |	 |__config.php - Config file to store all the DB and AWS configuration.
+	   |	   |	 |
+	   |	   |	 |__quantum_table.sql - SQL dump of the database containing the information gathered from Amazon.
+	   |	   |
+	   |	   |__include
+	   |	   		 |
+	   |			 |__controller.php - Main Application PHP controller.
+	   |								 Calls the AWS to lookup items.
+	   |								 Lookups items from the local MYSQL database.

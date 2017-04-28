@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Quantum Networks Coding Assessment</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	</head>
+	<body>
+		<div class="container">
+			<div class = "row">
+				<div class = "col-lg-6">
+					<h2>Search DB</h2>
+					<table id = "table1" class="table">
+						<thead>
+							<tr>
+								<th>ASIN</th>
+								<th>Title</th>
+								<th>MPN</th>
+								<th>Price</th>
+							</tr>
+						</thead>
+						<tbody>
+							
+						</tbody>
+					</table>
+				</div>
+				<div class = "col-lg-6">
+					<h2>Search Amazon</h2>
+
+					<div>
+						<input type="text" name="ASIN" id="ASIN">
+						<input type="button" name="submit" id="submitBtn" value="Submit">
+					</div>
+
+					<div>
+						<table id = "table2" class="table">
+							<thead>
+								<tr>
+									<th>ASIN</th>
+									<th>Title</th>
+									<th>MPN</th>
+									<th>Price</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr id="fetched_row"></tr>
+							</tbody>
+						</table>
+						<input type="button" name="addToDB" id="addBtn" value="Add into DB">
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+		<script>
+			$(document).ready(function(){
+				retrieveData();
+			});
+
+			// Function to load data from local database
+			function retrieveData() {
+				$('#table2').hide();
+				$('#addBtn').hide();
+
+				// Request data from local database(A cheaper version of the MVC framework)
+				$.ajax({
+					url: "include/controller.php",
+					type: "GET",
+					dataType: "html",
+					success: function(data){
+						$('#table1 > tbody').html(data);
+					}
+				});
+			};
+
+			// Handle ASIN lookup from the 2nd column
+			$("#submitBtn").click(function() {
+				var asin = $('#ASIN').val();
+				if(asin!=='') {
+					// Check if request ASIN is present in AWS
+					$.ajax({
+						type: "GET",
+						url: "include/controller.php",
+						data: "ASIN="+asin,
+						success: function(data){
+							if(data!=='') {
+								$('#table2').show();
+								$('#addBtn').show();
+								$('#fetched_row').html(data);
+							}else {								// Nothing found in AWS
+								$('#fetched_row').html();
+								alert('Item with this ASIN does not exist in the database.')
+							}
+						},
+						error: function(data) {
+							console.log("Error occured.");
+						}
+					});
+				} else {										// If blank ASIN is requested
+					alert('Please enter a valid ASIN ID.')
+				}
+			});
+
+			// Handle Add to local database functionality
+			$("#addBtn").click(function() {
+				// Retrieve values from DOM
+				var asin = document.getElementById("fetched_asin").innerHTML;
+				var title = document.getElementById("fetched_title").innerHTML;
+				var mpn = document.getElementById("fetched_mpn").innerHTML;
+				var price = document.getElementById("fetched_price").innerHTML;
+
+				// Update local Database with the new parameters
+				$.ajax({
+						type: "POST",
+						url: "include/controller.php",
+						data: "ASIN="+asin+"&TITLE="+title+"&MPN="+mpn+"&PRICE="+price,
+						success: function(data){
+							if(data=='Success') {
+								retrieveData();
+								$('#fetched_row').html();
+							}else if(data=='Failure - Already exists') {	// If record is already present in local DB
+								$('#table2').hide();
+								$('#addBtn').hide();
+								$('#fetched_row').html();
+								alert('Entry already exists in the database.')
+							}else {											// If the update to DB failed
+								$('#table2').hide();
+								$('#addBtn').hide();
+								$('#fetched_row').html();
+							}
+						},
+						error: function(data) {
+							console.log("Error occured.");
+						}
+					});
+			});
+		</script>
+	</body>
+</html>
