@@ -44,10 +44,12 @@ Interface:
 	   |	   |	 |
 	   |	   |	 |__config.php - Config file to store all the DB and AWS configuration.
 	   |	   |	 |
-	   |	   |	 |__quantum_table.sql - SQL dump of the database containing the information gathered from Amazon.
+	   |	   |	 |__quantum_table.sql - SQL dump of the database containing the information 
+	   |	   |							gathered from Amazon.
 	   |	   |
 	   |	   |__include
 	   |	   		 |
 	   |			 |__controller.php - Main Application PHP controller.
 	   |								 Calls the AWS to lookup items.
-	   |								 Lookups items from the local MYSQL database.
+	   |								 Lookups items from the local MYSQL 
+	   |								 database.
